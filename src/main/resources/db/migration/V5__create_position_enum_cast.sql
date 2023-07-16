@@ -1,0 +1,1 @@
+CREATE CAST (varchar AS position_enum) WITH INOUT AS IMPLICIT;
