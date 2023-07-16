@@ -1,0 +1,28 @@
+<div>
+  <table class="table m-auto" *ngIf="managers.length > 0">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Stanowisko</th>
+        <th>Dział</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let manager of managers">
+        <td>{{ manager.id }}</td>
+        <td>{{ manager.firstName }}</td>
+        <td>{{ manager.lastName }}</td>
+        <td>{{ manager.position | titlecase }}</td>
+        <td>{{ manager.department.shortName }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="managers.length == 0">
+    Pracownik nie posiada przełożonych
+  </div> <br/>
+
+  <button class="btn btn-primary" (click)="goBack()">Powrót</button>
+</div>

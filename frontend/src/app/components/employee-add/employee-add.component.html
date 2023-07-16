@@ -1,0 +1,41 @@
+<div class="w-50">
+  <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <label for="firstName">Imię: </label>
+    <input class="form-control" type="text" #firstName="ngModel" id="firstName" name="firstName" [(ngModel)]="employee.firstName" required />
+    <span class="position-absolute text-danger small" *ngIf="form.submitted && firstName.errors?.['required']">
+      Imię jest wymagane.
+    </span> <br/>
+
+    <label for="lastName">Nazwisko: </label>
+    <input class="form-control" type="text" #lastName="ngModel" id="lastName" name="lastName" [(ngModel)]="employee.lastName" required />
+    <span class="position-absolute text-danger small" *ngIf="form.submitted && lastName.errors?.['required']">
+      Nazwisko jest wymagane.
+    </span> <br/>
+
+    <input type="hidden" name="active" value="true" [(ngModel)]="employee.active">
+
+    <label for="position">Stanowisko: </label>
+    <select class="form-control" #position="ngModel" id="position" name="position" [(ngModel)]="employee.position" required>
+      <option value="PREZES">Prezes</option>
+      <option value="DYREKTOR">Dyrektor</option>
+      <option value="KOORDYNATOR">Koordynator</option>
+      <option value="KIEROWNIK">Kierownik</option>
+      <option value="PRACOWNIK">Pracownik</option>
+    </select>
+    <span class="position-absolute text-danger small" *ngIf="form.submitted && position.errors?.['required']">
+      Stanowisko jest wymagane.
+    </span> <br/>
+
+    <label for="department">Dział: </label>
+    <select class="form-control" #department="ngModel" id="department" name="department" [(ngModel)]="employee.department" required>
+      <option *ngFor="let department of departments" [ngValue]="department.id">{{ department.shortName }}</option>
+    </select>
+    <span class="position-absolute text-danger small" *ngIf="form.submitted && department.errors?.['required']">
+      Dział jest wymagany.
+    </span> <br/><br/>
+
+    <button class="btn btn-primary" type="submit">Dodaj pracownika</button>
+  </form> <br/><br/>
+
+  <button class="btn btn-secondary" (click)="goBack()">Powrót</button>
+</div>

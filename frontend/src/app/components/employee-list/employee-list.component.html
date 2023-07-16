@@ -1,0 +1,72 @@
+<div>
+  <table class="table m-auto">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Imię
+          <button class="bg-white border-0" (click)="sortData('firstName')">
+            <i [ngClass]="{'bi-caret-up-fill' : this.sortOrder == 'asc' && this.sortField == 'firstName',
+            'bi-caret-down-fill' : this.sortOrder == 'desc' && this.sortField == 'firstName',
+            'bi-caret-right-fill' : this.sortField != 'firstName'}"></i>
+          </button> <br/>
+          <input type="text" [(ngModel)]="firstNameFilter" name="firstNameFilter" (input)="filterEmployees()">
+        </th>
+        <th>Nazwisko
+          <button class="bg-white border-0" (click)="sortData('lastName')">
+            <i [ngClass]="{'bi-caret-up-fill' : this.sortOrder == 'asc' && this.sortField == 'lastName',
+            'bi-caret-down-fill' : this.sortOrder == 'desc' && this.sortField == 'lastName',
+            'bi-caret-right-fill' : this.sortField != 'lastName'}"></i>
+          </button> <br/>
+          <input type="text" [(ngModel)]="lastNameFilter" name="lastNameFilter" (input)="filterEmployees()">
+        </th>
+        <th>Stanowisko
+          <button class="bg-white border-0" (click)="sortData('position')">
+            <i [ngClass]="{'bi-caret-up-fill' : this.sortOrder == 'asc' && this.sortField == 'position',
+            'bi-caret-down-fill' : this.sortOrder == 'desc' && this.sortField == 'position',
+            'bi-caret-right-fill' : this.sortField != 'position'}"></i>
+          </button> <br/>
+          <input type="text" [(ngModel)]="positionFilter" name="positionFilter" (input)="filterEmployees()">
+        </th>
+        <th>Id przełożonego</th>
+        <th>Dział
+          <button class="bg-white border-0" (click)="sortData('department.id')">
+            <i [ngClass]="{'bi-caret-up-fill' : this.sortOrder == 'asc' && this.sortField == 'department.id',
+            'bi-caret-down-fill' : this.sortOrder == 'desc' && this.sortField == 'department.id',
+            'bi-caret-right-fill' : this.sortField != 'department.id'}"></i>
+          </button> <br/>
+          <input type="text" [(ngModel)]="departmentFilter" name="departmentFilter" (input)="filterEmployees()">
+        </th>
+        <th>Pion</th>
+        <th>Akcje</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let employee of employees">
+        <td>{{ employee.id }}</td>
+        <td>{{ employee.firstName }}</td>
+        <td>{{ employee.lastName }}</td>
+        <td>{{ employee.position | titlecase }}</td>
+        <td>{{ employee.supervisor ? employee.supervisor.id : '-' }}</td>
+        <td>{{ employee.department.shortName }}</td>
+        <td>{{ employee.department.division }}</td>
+        <td>
+          <button type="button" class="btn btn-success py-1 px-2 me-1" [routerLink]="['edit', employee.id]">M</button>
+          <button type="button" class="btn btn-danger py-1 px-2 me-1" (click)="deactivateEmployee($event, employee.id)">U</button>
+          <button type="button" class="btn btn-primary p-1" [routerLink]="['managers', employee.id]">WP</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="employees.length == 0">
+    Nie znaleziono pracowników o zadanych kryteriach
+  </div> <br/>
+
+  <div>
+    <span>Wyświetlane {{ 1 + offset }} - {{ currentPage * pageSize + numberOfElements }} </span> <span>z {{ totalElements }}</span>
+    <button class="btn btn-link" (click)="previousPage()">Poprzednia strona</button>
+    <button class="btn btn-link" (click)="nextPage()">Następna strona</button>
+  </div> <br/>
+
+  <button class="btn btn-primary" routerLink="add">Dodaj pracownika</button>
+</div>
