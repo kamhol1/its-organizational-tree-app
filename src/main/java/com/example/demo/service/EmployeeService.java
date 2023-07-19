@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.CannotChangeDepartmentException;
+import com.example.demo.exception.CannotDeactivateManagerException;
+import com.example.demo.exception.EmployeeNotFoundException;
 import com.example.demo.model.Employee;
 import com.example.demo.model.EmployeeDTO;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.specifications.EmployeeSpecification;
 import com.example.demo.specifications.SearchCriteria;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +57,7 @@ public class EmployeeService {
     public EmployeeDTO getEmployeeDetails(int id) {
         Employee employee = repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
-            throw new EntityNotFoundException("Pracownik nie został znaleziony.");
+            throw new EmployeeNotFoundException();
         });
 
         return mapToEmployeeDTO.apply(employee);
@@ -64,7 +66,7 @@ public class EmployeeService {
     public List<EmployeeDTO> getEmployeeManagersById(int id) {
         Employee employee = repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
-            throw new EntityNotFoundException("Pracownik nie został znaleziony.");
+            throw new EmployeeNotFoundException();
         });
 
         List<Employee> managers = new ArrayList<>();
@@ -92,13 +94,13 @@ public class EmployeeService {
     public EmployeeDTO updateEmployee(int id, EmployeeDTO employeeDTO) {
         Employee employee = repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
-            throw new EntityNotFoundException("Pracownik nie został znaleziony.");
+            throw new EmployeeNotFoundException();
         });
 
         // Check if employee is a department manager, if so, throw an exception
         if (employee.isManager() && employee.getDepartment().getId() != employeeDTO.getDepartment().getId()) {
             logger.info("Failed to update an employee with id " + employee.getId() + " - tried to change department of the employee who is the manager of this department");
-            throw new IllegalArgumentException("Nie można zmienić działu pracownika, jeśli pełni on funkcję kierownika działu.");
+            throw new CannotChangeDepartmentException();
         }
 
         employee.setFirstName(employeeDTO.getFirstName());
@@ -117,12 +119,12 @@ public class EmployeeService {
     public void deactivateEmployee(int id) {
         Employee employee = repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
-            throw new EntityNotFoundException("Pracownik nie został znaleziony.");
+            throw new EmployeeNotFoundException();
         });
 
         if (employee.isManager()) {
             logger.info("Failed to deactivate an employee with id " + employee.getId() + " because the employee is a department manager");
-            throw new IllegalArgumentException("Nie można usunąć pracownika, który pełni funkcję kierownika działu.");
+            throw new CannotDeactivateManagerException();
         }
 
         employee.setActive(false);

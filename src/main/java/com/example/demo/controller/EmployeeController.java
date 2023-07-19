@@ -36,20 +36,12 @@ public class EmployeeController {
 
     @GetMapping("/{id}/details")
     ResponseEntity<?> getEmployeeDetailsById(@PathVariable int id) {
-        try {
-            return ResponseEntity.ok(service.getEmployeeDetails(id));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Wystąpił błąd: " + e.getMessage()));
-        }
+        return ResponseEntity.ok(service.getEmployeeDetails(id));
     }
 
     @GetMapping("/{id}/managers")
     ResponseEntity<?> getEmployeeManagersById(@PathVariable int id) {
-        try {
-            return ResponseEntity.ok(service.getEmployeeManagersById(id));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Wystąpił błąd: " + e.getMessage()));
-        }
+        return ResponseEntity.ok(service.getEmployeeManagersById(id));
     }
 
     @PostMapping
@@ -60,26 +52,14 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     ResponseEntity<MessageResponse> updateEmployee(@PathVariable int id, @RequestBody EmployeeDTO employeeDTO) {
-        try {
-            service.updateEmployee(id, employeeDTO);
-            return ResponseEntity.ok(new MessageResponse("Dane pracownika zostały zaktualizowane."));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Wystąpił błąd: " + e.getMessage()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Wystąpił błąd: " + e.getMessage()));
-        }
+        service.updateEmployee(id, employeeDTO);
+        return ResponseEntity.ok(new MessageResponse("Dane pracownika zostały zaktualizowane."));
     }
 
     @PatchMapping("/{id}/deactivate")
     ResponseEntity<MessageResponse> deactivateEmployee(@PathVariable int id) {
-        try {
-            service.deactivateEmployee(id);
-            return ResponseEntity.ok(new MessageResponse("Pracownik został usunięty."));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Wystąpił błąd: " + e.getMessage()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Wystąpił błąd: " + e.getMessage()));
-        }
+        service.deactivateEmployee(id);
+        return ResponseEntity.ok(new MessageResponse("Pracownik został usunięty."));
     }
 
 }
