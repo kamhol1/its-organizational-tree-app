@@ -29,10 +29,10 @@
         </th>
         <th>Id przełożonego</th>
         <th>Dział
-          <button class="bg-white border-0" (click)="sortData('department.id')">
-            <i [ngClass]="{'bi-caret-up-fill' : this.sortOrder == 'asc' && this.sortField == 'department.id',
-            'bi-caret-down-fill' : this.sortOrder == 'desc' && this.sortField == 'department.id',
-            'bi-caret-right-fill' : this.sortField != 'department.id'}"></i>
+          <button class="bg-white border-0" (click)="sortData('department')">
+            <i [ngClass]="{'bi-caret-up-fill' : this.sortOrder == 'asc' && this.sortField == 'department',
+            'bi-caret-down-fill' : this.sortOrder == 'desc' && this.sortField == 'department',
+            'bi-caret-right-fill' : this.sortField != 'department'}"></i>
           </button> <br/>
           <input type="text" [(ngModel)]="departmentFilter" name="departmentFilter" (input)="filterEmployees()">
         </th>
@@ -46,9 +46,9 @@
         <td>{{ employee.firstName }}</td>
         <td>{{ employee.lastName }}</td>
         <td>{{ employee.position | titlecase }}</td>
-        <td>{{ employee.supervisor ? employee.supervisor.id : '-' }}</td>
-        <td>{{ employee.department.shortName }}</td>
-        <td>{{ employee.department.division }}</td>
+        <td>{{ employee.supervisor ? employee.supervisor : '-' }}</td>
+        <td>{{ employee.department }}</td>
+        <td>{{ employee.division }}</td>
         <td>
           <button type="button" class="btn btn-success py-1 px-2 me-1" [routerLink]="['edit', employee.id]">M</button>
           <button type="button" class="btn btn-danger py-1 px-2 me-1" (click)="deactivateEmployee($event, employee.id)">U</button>

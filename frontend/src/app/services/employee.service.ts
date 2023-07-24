@@ -43,7 +43,7 @@ export class EmployeeService {
   }
 
   getEmployeeById(id: number): Observable<EmployeeModel> {
-    return this.http.get<EmployeeModel>(this.apiUrl + "/" + id + "/details");
+    return this.http.get<EmployeeModel>(this.apiUrl + "/" + id);
   }
 
   deleteEmployee(id: number): Observable<any> {

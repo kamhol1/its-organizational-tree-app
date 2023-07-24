@@ -1,11 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.EmployeeDTO;
+import com.example.demo.model.dto.EmployeeDto;
+import com.example.demo.model.dto.EmployeeWriteDto;
 import com.example.demo.service.EmployeeService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +22,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/active")
-    ResponseEntity<Page<EmployeeDTO>> getActiveEmployees(Pageable pageable,
+    ResponseEntity<Page<EmployeeDto>> getActiveEmployees(Pageable pageable,
                                                          @RequestParam(value = "firstName", required = false) String firstNameFilter,
                                                          @RequestParam(value = "lastName", required = false) String lastNameFilter,
                                                          @RequestParam(value = "position", required = false) String positionFilter,
@@ -34,25 +33,25 @@ public class EmployeeController {
         return ResponseEntity.ok(service.getActiveEmployees(firstNameFilter, lastNameFilter, positionFilter, departmentFilter, pageable, sortBy, sortOrder));
     }
 
-    @GetMapping("/{id}/details")
-    ResponseEntity<?> getEmployeeDetailsById(@PathVariable int id) {
-        return ResponseEntity.ok(service.getEmployeeDetails(id));
+    @GetMapping("/{id}")
+    ResponseEntity<EmployeeDto> getEmployee(@PathVariable int id) {
+        return ResponseEntity.ok(service.getEmployee(id));
     }
 
     @GetMapping("/{id}/managers")
-    ResponseEntity<?> getEmployeeManagersById(@PathVariable int id) {
+    ResponseEntity<List<EmployeeDto>> getEmployeeManagersById(@PathVariable int id) {
         return ResponseEntity.ok(service.getEmployeeManagersById(id));
     }
 
     @PostMapping
-    ResponseEntity<MessageResponse> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        service.createEmployee(employeeDTO);
+    ResponseEntity<MessageResponse> createEmployee(@RequestBody EmployeeWriteDto dto) {
+        service.createEmployee(dto);
         return ResponseEntity.ok().body(new MessageResponse("Pracownik został dodany."));
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<MessageResponse> updateEmployee(@PathVariable int id, @RequestBody EmployeeDTO employeeDTO) {
-        service.updateEmployee(id, employeeDTO);
+    ResponseEntity<MessageResponse> updateEmployee(@PathVariable int id, @RequestBody EmployeeWriteDto employeeupdateDto) {
+        service.updateEmployee(id, employeeupdateDto);
         return ResponseEntity.ok(new MessageResponse("Dane pracownika zostały zaktualizowane."));
     }
 

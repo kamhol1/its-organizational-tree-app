@@ -4,7 +4,9 @@ import com.example.demo.exception.CannotChangeDepartmentException;
 import com.example.demo.exception.CannotDeactivateManagerException;
 import com.example.demo.exception.EmployeeNotFoundException;
 import com.example.demo.model.Employee;
-import com.example.demo.model.EmployeeDTO;
+import com.example.demo.model.dto.EmployeeDto;
+import com.example.demo.model.dto.EmployeeWriteDto;
+import com.example.demo.model.mapper.EmployeeDtoMapper;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.specifications.EmployeeSpecification;
 import com.example.demo.specifications.SearchCriteria;
@@ -19,7 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+
+import static com.example.demo.model.mapper.EmployeeDtoMapper.*;
 
 @Service
 public class EmployeeService {
@@ -31,7 +34,7 @@ public class EmployeeService {
         this.repository = repository;
     }
 
-    public Page<EmployeeDTO> getActiveEmployees(String firstNameFilter, String lastNameFilter, String positionFilter, String departmentFilter, Pageable pageable, String sortBy, String sortOrder) {
+    public Page<EmployeeDto> getActiveEmployees(String firstNameFilter, String lastNameFilter, String positionFilter, String departmentFilter, Pageable pageable, String sortBy, String sortOrder) {
         Sort sort = Sort.by(sortOrder.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
@@ -51,19 +54,17 @@ public class EmployeeService {
             spec.add(new SearchCriteria("department", departmentFilter));
         }
 
-        return repository.findAll(spec, page).map(mapToEmployeeDTO);
+        return repository.findAll(spec, page).map(EmployeeDtoMapper::mapToEmployeeDto);
     }
 
-    public EmployeeDTO getEmployeeDetails(int id) {
-        Employee employee = repository.findById(id).orElseThrow(() -> {
+    public EmployeeDto getEmployee(int id) {
+        return mapToEmployeeDto(repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
             throw new EmployeeNotFoundException();
-        });
-
-        return mapToEmployeeDTO.apply(employee);
+        }));
     }
 
-    public List<EmployeeDTO> getEmployeeManagersById(int id) {
+    public List<EmployeeDto> getEmployeeManagersById(int id) {
         Employee employee = repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
             throw new EmployeeNotFoundException();
@@ -71,48 +72,43 @@ public class EmployeeService {
 
         List<Employee> managers = new ArrayList<>();
 
-        while (employee != null && employee.getManager() != null) {
-            employee = employee.getManager();
+        while (employee != null && employee.getSupervisor() != null) {
+            employee = employee.getSupervisor();
             managers.add(employee);
         }
 
         return managers.stream()
-                .map(mapToEmployeeDTO)
+                .map(EmployeeDtoMapper::mapToEmployeeDto)
                 .toList();
     }
 
     @Transactional
-    public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = mapToEmployee.apply(employeeDTO);
+    public EmployeeDto createEmployee(EmployeeWriteDto dto) {
+        Employee employee = mapToEmployee(dto);
         Employee created = repository.save(employee);
         logger.info("New employee created with id: " + created.getId());
 
-        return mapToEmployeeDTO.apply(created);
+        return mapToEmployeeDto(created);
     }
 
     @Transactional
-    public EmployeeDTO updateEmployee(int id, EmployeeDTO employeeDTO) {
+    public EmployeeDto updateEmployee(int id, EmployeeWriteDto dto) {
         Employee employee = repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
             throw new EmployeeNotFoundException();
         });
 
         // Check if employee is a department manager, if so, throw an exception
-        if (employee.isManager() && employee.getDepartment().getId() != employeeDTO.getDepartment().getId()) {
+        if (employee.isManager() && employee.getDepartment().getId() != dto.getDepartment()) {
             logger.info("Failed to update an employee with id " + employee.getId() + " - tried to change department of the employee who is the manager of this department");
             throw new CannotChangeDepartmentException();
         }
 
-        employee.setFirstName(employeeDTO.getFirstName());
-        employee.setLastName(employeeDTO.getLastName());
-        employee.setPosition(employeeDTO.getPosition());
-        employee.setActive(employeeDTO.isActive());
-        employee.setDepartment(employeeDTO.getDepartment());
+        Employee updated = repository.save(mapToEmployee(dto, employee));
 
-        Employee updated = repository.save(employee);
         logger.info("Employee with id " + updated.getId() + " has been updated");
 
-        return mapToEmployeeDTO.apply(updated);
+        return mapToEmployeeDto(updated);
     }
 
     @Transactional
@@ -132,24 +128,4 @@ public class EmployeeService {
 
         logger.info("Employee with id " + id + " has been deactivated");
     }
-
-    private final Function<EmployeeDTO, Employee> mapToEmployee = e -> Employee.builder()
-            .id(e.getId())
-            .firstName(e.getFirstName())
-            .lastName(e.getLastName())
-            .position(e.getPosition())
-            .active(e.isActive())
-            .department(e.getDepartment())
-            .build();
-
-
-    private final Function<Employee, EmployeeDTO> mapToEmployeeDTO = e -> EmployeeDTO.builder()
-            .id(e.getId())
-            .firstName(e.getFirstName())
-            .lastName(e.getLastName())
-            .position(e.getPosition())
-            .active(e.isActive())
-            .department(e.getDepartment())
-            .supervisor(e.getSupervisor())
-            .build();
 }

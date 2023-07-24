@@ -26,7 +26,7 @@
 
     <label for="department">Dział: </label>
     <select class="form-control" #department="ngModel" id="department" name="department" [(ngModel)]="employee.department" required>
-      <option *ngFor="let department of departments" [ngValue]="department" [attr.selected]="employee.department.id == department.id ? '' : null">{{ department.name }}</option>
+      <option *ngFor="let department of departments" [ngValue]="department.id" [attr.selected]="employee.department == department.id ? '' : null">{{ department.shortName }}</option>
     </select>
     <span class="position-absolute text-danger small" *ngIf="form.submitted && department.errors?.['required']">
       Dział jest wymagany.

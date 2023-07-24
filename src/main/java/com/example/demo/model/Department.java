@@ -46,10 +46,6 @@ public class Department {
     @Column(name = "updated_on", columnDefinition = "timestamp", nullable = false)
     private LocalDateTime updatedOn;
 
-    public Department(int id) {
-        this.id = id;
-    }
-
     @PrePersist
     void prePersist() {
         createdOn = LocalDateTime.now();

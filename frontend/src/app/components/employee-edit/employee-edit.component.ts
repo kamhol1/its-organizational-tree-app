@@ -7,6 +7,7 @@ import {DepartmentModel} from "../../models/department.model";
 import {DepartmentService} from "../../services/department.service";
 import {Location} from '@angular/common';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {EmployeeWriteModel} from "../../models/employee-write.model";
 
 @Component({
   selector: 'app-employee-edit',
@@ -15,7 +16,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 })
 export class EmployeeEditComponent implements OnInit {
   employeeId!: number;
-  employee!: EmployeeModel;
+  employee!: EmployeeWriteModel;
   departments: DepartmentModel[] = [];
 
   constructor(private employeeService: EmployeeService,
@@ -47,12 +48,10 @@ export class EmployeeEditComponent implements OnInit {
       .subscribe({
         next: (employee: EmployeeModel) => {
           this.employee = {
-            id: employee.id,
             firstName: employee.firstName,
             lastName: employee.lastName,
             position: employee.position,
-            active: employee.active,
-            department: employee.department
+            department: employee.departmentId
           };
         },
         error: (error) => {

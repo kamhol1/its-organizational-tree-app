@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Department;
+import com.example.demo.model.dto.DepartmentDto;
 import com.example.demo.service.DepartmentService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class DepartmentController {
     }
 
     @GetMapping
-    List<Department> findAll() {
+    List<DepartmentDto> findAll() {
         return service.findAll();
     }
 

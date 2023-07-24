@@ -56,23 +56,6 @@ public class Employee {
     }
 
     @JsonIgnore
-    public Employee getManager() {
-        Department department = this.getDepartment();
-        if (department != null) {
-            Employee manager = department.getManager();
-            if (manager != null) {
-                if (this.getId() == manager.getId()) {
-                    Department parentDepartment = department.getParentDepartment();
-                    return parentDepartment != null ? parentDepartment.getManager() : null;
-                } else {
-                    return manager;
-                }
-            }
-        }
-        return null;
-    }
-
-    @JsonIgnore
     public Employee getSupervisor() {
         if (this.isManager()) {
             return this.getDepartment().getParentDepartment() != null ? this.getDepartment().getParentDepartment().getManager() : null;

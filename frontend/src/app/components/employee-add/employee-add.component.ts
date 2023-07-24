@@ -7,6 +7,7 @@ import {DepartmentModel} from "../../models/department.model";
 import {EmployeeModel} from "../../models/employee.model";
 import {Location} from '@angular/common';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {EmployeeWriteModel} from "../../models/employee-write.model";
 
 @Component({
   selector: 'app-employee-add',
@@ -14,7 +15,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   styleUrls: ['./employee-add.component.css']
 })
 export class EmployeeAddComponent implements OnInit {
-  employee!: EmployeeModel;
+  employee!: EmployeeWriteModel;
   departments: DepartmentModel[] = [];
 
   constructor(private employeeService: EmployeeService,
@@ -26,11 +27,9 @@ export class EmployeeAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.employee = {
-      id: 0,
       firstName: '',
       lastName: '',
       position: '',
-      active: true,
       department: undefined!
     }
 

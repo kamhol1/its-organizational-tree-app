@@ -12,8 +12,6 @@
       Nazwisko jest wymagane.
     </span> <br/>
 
-    <input type="hidden" name="active" value="true" [(ngModel)]="employee.active">
-
     <label for="position">Stanowisko: </label>
     <select class="form-control" #position="ngModel" id="position" name="position" [(ngModel)]="employee.position" required>
       <option value="PREZES">Prezes</option>
