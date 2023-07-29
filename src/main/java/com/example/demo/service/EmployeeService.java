@@ -112,7 +112,7 @@ public class EmployeeService {
     }
 
     @Transactional
-    public void deactivateEmployee(int id) {
+    public EmployeeDto deactivateEmployee(int id) {
         Employee employee = repository.findById(id).orElseThrow(() -> {
             logger.info("Employee with id " + id + " not found");
             throw new EmployeeNotFoundException();
@@ -124,8 +124,10 @@ public class EmployeeService {
         }
 
         employee.setActive(false);
-        repository.save(employee);
+        Employee deactivated = repository.save(employee);
 
         logger.info("Employee with id " + id + " has been deactivated");
+
+        return mapToEmployeeDto(deactivated);
     }
 }

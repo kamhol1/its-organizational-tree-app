@@ -45,20 +45,20 @@ public class EmployeeController {
 
     @PostMapping
     ResponseEntity<MessageResponse> createEmployee(@RequestBody EmployeeWriteDto dto) {
-        service.createEmployee(dto);
-        return ResponseEntity.ok().body(new MessageResponse("Pracownik został dodany."));
+        EmployeeDto created = service.createEmployee(dto);
+        return ResponseEntity.ok(new MessageResponse("Nowy pracownik został dodany. " + "Id pracownika: " + created.getId()));
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<MessageResponse> updateEmployee(@PathVariable int id, @RequestBody EmployeeWriteDto employeeupdateDto) {
-        service.updateEmployee(id, employeeupdateDto);
-        return ResponseEntity.ok(new MessageResponse("Dane pracownika zostały zaktualizowane."));
+    ResponseEntity<MessageResponse> updateEmployee(@PathVariable int id, @RequestBody EmployeeWriteDto employeeUpdateDto) {
+        service.updateEmployee(id, employeeUpdateDto);
+        return ResponseEntity.ok(new MessageResponse("Dane pracownika zostały zaktualizowane"));
     }
 
     @PatchMapping("/{id}/deactivate")
     ResponseEntity<MessageResponse> deactivateEmployee(@PathVariable int id) {
-        service.deactivateEmployee(id);
-        return ResponseEntity.ok(new MessageResponse("Pracownik został usunięty."));
+        EmployeeDto deactivated = service.deactivateEmployee(id);
+        return ResponseEntity.ok(new MessageResponse("Pracownik o Id " + deactivated.getId() + " został usunięty"));
     }
 
 }

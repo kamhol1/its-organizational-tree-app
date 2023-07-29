@@ -10,5 +10,7 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: 'true'
+        format_sql: true
     hibernate:
       ddl-auto: validate
+    show-sql: true
