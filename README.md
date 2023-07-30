@@ -12,5 +12,5 @@ url: jdbc:postgresql://localhost:5432/itsapp
 username: postgres
 password: postgres
 ```
-2. Run the command `mvnw spring-boot:run`. It will install all needed dependencies and set up the application.
+2. In the project root directory, run the command `mvnw spring-boot:run`. It will install all needed dependencies and set up the application.
 3. Access the application at http://localhost:8080
